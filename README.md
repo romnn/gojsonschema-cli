@@ -75,4 +75,4 @@ task format
 
 ## License
 
-The project is licensed under the same
+The project is licensed under the same license as [xeipuuv/gojsonschema](https://github.com/xeipuuv/gojsonschema).

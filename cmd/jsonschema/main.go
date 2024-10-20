@@ -92,6 +92,26 @@ func resolve(location string) ([]byte, error) {
 	return loadFile(location)
 }
 
+func toJSON(data []byte) ([]byte, error) {
+	var v any
+	if err := json.Unmarshal(data, &v); err != nil {
+		// try to parse from YAML
+		if err := yaml.Unmarshal(data, &v); err == nil {
+			// convert to JSON
+			var err error
+			data, err = k8syaml.YAMLToJSON(data)
+			if err != nil {
+				return []byte{}, err
+			}
+		} else {
+			// invalid JSON and invalid YAML
+			return []byte{}, err
+		}
+	}
+	// valid JSON
+	return data, nil
+}
+
 func validate(_ context.Context, cmd *cli.Command, logger *zap.Logger) error {
 	colorPreference := strings.ToLower(cmd.String(colorFlag.Name))
 	var color bool
@@ -150,35 +170,15 @@ func validate(_ context.Context, cmd *cli.Command, logger *zap.Logger) error {
 	}
 
 	// make sure schema is valid JSON
-	var schema any
-	if err := json.Unmarshal(schemaJSON, &schema); err != nil {
-		// try to parse from YAML
-		if err := yaml.Unmarshal(schemaJSON, &schema); err == nil {
-			// convert to JSON
-			var err error
-			schemaJSON, err = k8syaml.YAMLToJSON(schemaJSON)
-			if err != nil {
-				return err
-			}
-		} else {
-			return err
-		}
+	schemaJSON, err = toJSON(schemaJSON)
+	if err != nil {
+		return err
 	}
 
-	// make sure values is valid JSON
-	var values any
-	if err := json.Unmarshal(valuesJSON, &values); err != nil {
-		// try to parse from YAML
-		if err := yaml.Unmarshal(valuesJSON, &values); err == nil {
-			// convert to JSON
-			var err error
-			valuesJSON, err = k8syaml.YAMLToJSON(valuesJSON)
-			if err != nil {
-				return err
-			}
-		} else {
-			return err
-		}
+	// make sure values are valid JSON
+	valuesJSON, err = toJSON(valuesJSON)
+	if err != nil {
+		return err
 	}
 
 	if bytes.Equal(valuesJSON, []byte("null")) {
@@ -198,7 +198,9 @@ func validate(_ context.Context, cmd *cli.Command, logger *zap.Logger) error {
 		for _, desc := range result.Errors() {
 			logger.Error(desc.Description(), zap.String("field", desc.Field()))
 			if color {
-				sb.WriteString(fmt.Sprintf("%s: %s\n", red(desc.Field()), desc.Description()))
+				sb.WriteString(
+					fmt.Sprintf("%s: %s\n", red(desc.Field()), desc.Description()),
+				)
 			} else {
 				sb.WriteString(fmt.Sprintf("%s: %s\n", desc.Field(), desc.Description()))
 			}

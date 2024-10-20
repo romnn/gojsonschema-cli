@@ -72,6 +72,12 @@ task lint
 task format
 ```
 
+## Acknowledgements
+
+- This CLI uses [xeipuuv/gojsonschema](https://github.com/xeipuuv/gojsonschema) under the hood.
+- This CLI intentionallyh behaves very similar to the internal JSON schema validation of [`helm lint`](https://github.com/helm/helm/blob/main/pkg/chartutil/jsonschema.go).
+- This CLI has a similar goal as [neilpa/yajsv](https://github.com/neilpa/yajsv), which does not support remote schemas, schema checking, and other features.
+
 ## License
 
 The project is licensed under the same license as [xeipuuv/gojsonschema](https://github.com/xeipuuv/gojsonschema).

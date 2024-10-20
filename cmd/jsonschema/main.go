@@ -35,6 +35,11 @@ var (
 		Aliases: []string{"v"},
 		Usage:   "path to values",
 	}
+
+	verboseFlag = cli.BoolFlag{
+		Name:  "verbose",
+		Usage: "enable verbose output",
+	}
 )
 
 const (
@@ -79,6 +84,8 @@ func resolve(location string) ([]byte, error) {
 }
 
 func validate(_ context.Context, cmd *cli.Command, logger *zap.Logger) error {
+	verbose := cmd.Bool(verboseFlag.Name)
+
 	schemaLocation := cmd.String(schemaLocationFlag.Name)
 	if schemaLocation == "" {
 		return fmt.Errorf("missing schema")
@@ -113,8 +120,13 @@ func validate(_ context.Context, cmd *cli.Command, logger *zap.Logger) error {
 		valuesJSON, schemaJSON = schemaJSON, valuesJSON
 	}
 
-	// fmt.Printf("##### schema:\n%s\n", schemaJSON)
-	// fmt.Printf("##### values:\n%s\n", valuesJSON)
+	logger.Debug("values", zap.String("location", valuesLocation))
+	logger.Debug("schema", zap.String("location", schemaLocation))
+
+	if verbose {
+		fmt.Printf("##### schema:\n%s\n", schemaJSON)
+		fmt.Printf("##### values:\n%s\n", valuesJSON)
+	}
 
 	// make sure schema is valid JSON
 	var schema any
@@ -178,7 +190,9 @@ func main() {
 	} else {
 		logger, _ = zap.NewProduction()
 	}
-	defer logger.Sync()
+	defer func() {
+		_ = logger.Sync()
+	}()
 
 	app := cli.Command{
 		Name:        "jsonschema",

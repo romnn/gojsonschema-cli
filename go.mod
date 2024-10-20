@@ -3,6 +3,7 @@ module github.com/romnn/gojsonschema-cli
 go 1.23.1
 
 require (
+	github.com/fatih/color v1.17.0
 	github.com/joho/godotenv v1.5.1
 	github.com/thessem/zap-prettyconsole v0.5.2
 	github.com/urfave/cli/v3 v3.0.0-alpha9.1
@@ -16,6 +17,8 @@ require (
 
 require (
 	github.com/Code-Hex/dd v1.1.0 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect

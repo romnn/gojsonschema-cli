@@ -15,12 +15,18 @@ import (
 	"gopkg.in/yaml.v3"
 	k8syaml "sigs.k8s.io/yaml"
 
+	"github.com/fatih/color"
 	_ "github.com/joho/godotenv/autoload"
 	prettyconsole "github.com/thessem/zap-prettyconsole"
 	"github.com/urfave/cli/v3"
 	"go.uber.org/zap"
 	"golang.org/x/term"
 	errors "golang.org/x/xerrors"
+)
+
+const (
+	// essentially disable logging for now
+	defaultLogLevel = zap.FatalLevel
 )
 
 var (
@@ -40,10 +46,13 @@ var (
 		Name:  "verbose",
 		Usage: "enable verbose output",
 	}
-)
 
-const (
-	defaultLogLevel = zap.FatalLevel
+	colorFlag = cli.StringFlag{
+		Name:  "color",
+		Usage: "configure color output [always, auto, never]",
+	}
+
+	red = color.New(color.FgRed).SprintFunc()
 )
 
 type JSONSchema struct {
@@ -84,6 +93,18 @@ func resolve(location string) ([]byte, error) {
 }
 
 func validate(_ context.Context, cmd *cli.Command, logger *zap.Logger) error {
+	colorPreference := strings.ToLower(cmd.String(colorFlag.Name))
+	var color bool
+	switch colorPreference {
+	case "never":
+		color = false
+	case "always":
+		color = true
+	default:
+		// default: auto
+		color = term.IsTerminal(int(os.Stdout.Fd()))
+	}
+
 	verbose := cmd.Bool(verboseFlag.Name)
 
 	schemaLocation := cmd.String(schemaLocationFlag.Name)
@@ -176,7 +197,11 @@ func validate(_ context.Context, cmd *cli.Command, logger *zap.Logger) error {
 		var sb strings.Builder
 		for _, desc := range result.Errors() {
 			logger.Error(desc.Description(), zap.String("field", desc.Field()))
-			sb.WriteString(fmt.Sprintf("- %s\n", desc))
+			if color {
+				sb.WriteString(fmt.Sprintf("%s: %s\n", red(desc.Field()), desc.Description()))
+			} else {
+				sb.WriteString(fmt.Sprintf("%s: %s\n", desc.Field(), desc.Description()))
+			}
 		}
 		return errors.New(sb.String())
 	}
@@ -206,6 +231,8 @@ func main() {
 				Flags: []cli.Flag{
 					&schemaLocationFlag,
 					&valuesLocationFlag,
+					&verboseFlag,
+					&colorFlag,
 				},
 				Action: func(ctx context.Context, cmd *cli.Command) error {
 					return validate(ctx, cmd, logger)

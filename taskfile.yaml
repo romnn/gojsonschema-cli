@@ -36,7 +36,7 @@ tasks:
     cmds:
       # NOTE: golines already will attempt to use goimports and otherwise gofmt as base formatters
       # similar to default ruff settings: linewidth=88 tab=4
-      - golines -m 88 -t 4 -w ./... {{.CLI_ARGS}}
+      - golines -m 88 -t 4 -w ./ {{.CLI_ARGS}}
 
   lint:
     aliases: [check]

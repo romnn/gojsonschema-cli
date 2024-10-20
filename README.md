@@ -1,10 +1,14 @@
-## JSON schema valiation CLI
+# JSON schema valiation CLI
+
+[![GoDoc](https://godoc.org/github.com/romnn/gojsonschema-cli?status.svg)](https://godoc.org/github.com/romnn/gojsonschema-cli)
+![Build status](https://github.com/romnn/gojsonschema-cli/actions/workflows/build.yaml/badge.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/romnn/gojsonschema-cli)](https://goreportcard.com/report/github.com/romnn/gojsonschema-cli)
 
 ```bash
 go install 'github.com/romnn/gojsonschema-cli/cmd/jsonschema@latest'
 ```
 
-#### Validate a JSON schema
+### Validate a JSON schema
 
 This is similar to ajv's `compile`, in that we validate the JSON schema itself.
 This can be useful when you first want to ensure that your schemas are well-formed.
@@ -16,7 +20,7 @@ jsonschema validate -s ./schemas/my-schema.json
 jsonschema validate -s "http://json-schema.org/draft-07/schema#" -v ./schemas/my-schema.json
 ```
 
-#### Validate a file against a schema
+### Validate a file against a schema
 
 ```bash
 jsonschema validate -s ./schemas/my-schema.json -v ./my-data.json
@@ -35,7 +39,7 @@ Also, you can validate YAML files, such as helm values files:
 jsonschema validate -s ./values.schema.json -v ./values.prod.yaml
 ```
 
-### Development
+## Development
 
 To use the provided tasks in `taskfile.yaml`, install [task](https://taskfile.dev/).
 

@@ -4,6 +4,17 @@
 ![Build status](https://github.com/romnn/gojsonschema-cli/actions/workflows/build.yaml/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/romnn/gojsonschema-cli)](https://goreportcard.com/report/github.com/romnn/gojsonschema-cli)
 
+A golang CLI wrapper for [xeipuuv/gojsonschema](https://github.com/xeipuuv/gojsonschema).
+
+##### Features:
+
+- Simple to install (static go binary)
+- Validate JSON or YAML files against a JSON schema
+- Check JSON schemas for correctness
+- Supports local and remote schemas
+
+**Note**: Only schemas up to `draft07` are officially supported.
+
 ```bash
 go install 'github.com/romnn/gojsonschema-cli/cmd/jsonschema@latest'
 ```
@@ -61,3 +72,7 @@ task test
 task lint
 task format
 ```
+
+## License
+
+The project is licensed under the same

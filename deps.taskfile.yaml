@@ -1,0 +1,39 @@
+version: 3
+tasks:
+  golines:
+    cmds:
+      - go install 'github.com/segmentio/golines@latest'
+    status:
+      - which golines
+
+  goimports:
+    cmds:
+      - go install 'golang.org/x/tools/cmd/goimports@latest'
+    status:
+      - which goimports
+
+  staticcheck:
+    cmds:
+      - go install 'honnef.co/go/tools/cmd/staticcheck@latest'
+    status:
+      - which staticcheck
+
+  golangci-lint:
+    cmds:
+      - go install 'github.com/golangci/golangci-lint/cmd/golangci-lint@latest'
+    status:
+      - which golangci-lint
+
+  richgo:
+    cmds:
+      - go install 'github.com/kyoh86/richgo@latest'
+    status:
+      - which richgo
+
+  default:
+    cmds:
+      - task: golines
+      - task: goimports
+      - task: staticcheck
+      - task: golangci-lint
+      - task: richgo

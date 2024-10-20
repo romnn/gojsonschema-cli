@@ -1,4 +1,8 @@
 version: 3
+includes:
+  dependencies:install:
+    taskfile: deps.taskfile.yaml
+    dir: ./
 tasks:
   default:
     cmds:
@@ -42,5 +46,6 @@ tasks:
       - golangci-lint run ./... {{.CLI_ARGS}}
 
   test:
+    aliases: ["test:race"]
     cmds:
       - richgo test ./... -race {{.CLI_ARGS}}

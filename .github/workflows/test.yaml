@@ -1,0 +1,24 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        go-version: ["stable"]
+        os: [macos-latest, ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arduino/setup-task@v2
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Install development tools
+        run: task dependencies:install --output group --output-group-error-only
+      - name: Build
+        run: task build:race --output group --output-group-error-only
+      - name: Test
+        run: task test --output group --output-group-error-only

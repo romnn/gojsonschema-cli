@@ -1,0 +1,46 @@
+version: 3
+tasks:
+  default:
+    cmds:
+      - task: run
+
+  run:race:
+    dir: "{{.USER_WORKING_DIR}}" # allow user to pass relative paths as arguments
+    cmds:
+      - go run -race 'github.com/romnn/gojsonschema-cli/cmd/jsonschema' {{.CLI_ARGS}}
+
+  run:
+    interactive: true
+    dir: "{{.USER_WORKING_DIR}}" # allow user to pass relative paths as arguments
+    cmds:
+      - go run 'github.com/romnn/gojsonschema-cli/cmd/jsonschema' {{.CLI_ARGS}}
+
+  build:race:
+    cmds:
+      - go build -race 'github.com/romnn/gojsonschema-cli/cmd/jsonschema' {{.CLI_ARGS}}
+
+  build:
+    cmds:
+      - go build 'github.com/romnn/gojsonschema-cli/cmd/jsonschema' {{.CLI_ARGS}}
+
+  tidy:
+    cmds:
+      - go get ./...
+      - go mod tidy
+
+  format:
+    cmds:
+      # NOTE: golines already will attempt to use goimports and otherwise gofmt as base formatters
+      # similar to default ruff settings: linewidth=88 tab=4
+      - golines -m 88 -t 4 -w ./... {{.CLI_ARGS}}
+
+  lint:
+    aliases: [check]
+    cmds:
+      - go vet ./... {{.CLI_ARGS}}
+      - staticcheck ./... {{.CLI_ARGS}}
+      - golangci-lint run ./... {{.CLI_ARGS}}
+
+  test:
+    cmds:
+      - richgo test ./... -race {{.CLI_ARGS}}

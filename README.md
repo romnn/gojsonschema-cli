@@ -1,6 +1,5 @@
 # JSON schema valiation CLI
 
-[![GoDoc](https://godoc.org/github.com/romnn/gojsonschema-cli?status.svg)](https://godoc.org/github.com/romnn/gojsonschema-cli)
 ![Build status](https://github.com/romnn/gojsonschema-cli/actions/workflows/build.yaml/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/romnn/gojsonschema-cli)](https://goreportcard.com/report/github.com/romnn/gojsonschema-cli)
 

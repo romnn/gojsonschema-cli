@@ -15,7 +15,7 @@ A golang CLI wrapper for [xeipuuv/gojsonschema](https://github.com/xeipuuv/gojso
 **Note**: Only schemas up to `draft07` are officially supported.
 
 ```bash
-go install 'github.com/romnn/gojsonschema-cli/cmd/jsonschema@latest'
+go install 'github.com/romnn/gojsonschema-cli/cmd/jsonschema@main'
 ```
 
 ### Validate a JSON schema

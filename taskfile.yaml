@@ -28,6 +28,7 @@ tasks:
       - go build 'github.com/romnn/gojsonschema-cli/cmd/jsonschema' {{.CLI_ARGS}}
 
   tidy:
+    aliases: [install]
     cmds:
       - go get ./...
       - go mod tidy

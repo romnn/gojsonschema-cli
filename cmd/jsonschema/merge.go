@@ -1,32 +1,17 @@
 package main
 
 import (
-	// "bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"os"
 
-	// "io"
-	// "net/http"
-	// "net/url"
-	// "os"
-	// "strings"
+	// "github.com/invopop/jsonschema"
+	"github.com/romnn/gojsonschema-cli/pkg"
 
-	"dario.cat/mergo"
-	"github.com/invopop/jsonschema"
-
-	// "github.com/xeipuuv/gojsonschema"
-	// "gopkg.in/yaml.v3"
-	// k8syaml "sigs.k8s.io/yaml"
-
-	// "github.com/fatih/color"
 	_ "github.com/joho/godotenv/autoload"
-	// prettyconsole "github.com/thessem/zap-prettyconsole"
 	"github.com/urfave/cli/v3"
 	"go.uber.org/zap"
-	// "golang.org/x/term"
-	// errors "golang.org/x/xerrors"
 )
 
 var (
@@ -54,26 +39,30 @@ func merge(_ context.Context, cmd *cli.Command, logger *zap.Logger) error {
 	mergedSchemaOutputPath := cmd.String(mergeSchemaOutputPathFlag.Name)
 
 	// merge schemas in order
-	var mergedSchema jsonschema.Schema
+	// var schemas []jsonschema.Schema
+	var schemas [][]byte
 	for i, schemaLocation := range schemaLocations {
-		var schema jsonschema.Schema
-		schemaJSON, _ := resolve(Location{PathOrUrl: schemaLocation})
-		if err := json.Unmarshal(schemaJSON, &schema); err != nil {
+		schemaJSON, err := resolve(Location{PathOrUrl: schemaLocation})
+		if err != nil {
 			return err
 		}
-
 		if verbose {
 			fmt.Printf("##### schema[%d]:\n%s\n", i, schemaJSON)
 		}
+		schemas = append(schemas, schemaJSON)
+		// schema, err := pkg.ParseSchema(schemaJSON)
+		// if err != nil {
+		// 	return err
+		// }
+		// schemas = append(schemas, schema)
+	}
 
-		var transformers mergo.Transformers
-		if err := mergo.Merge(
-			&mergedSchema,
-			schema,
-			mergo.WithTransformers(transformers),
-		); err != nil {
-			return err
-		}
+	logger.Info("merging", zap.Int("schemas", len(schemas)))
+
+	// mergedSchema, err := pkg.MergeSchemas(schemas...)
+	mergedSchema, err := pkg.MergeSchemasJSON(schemas...)
+	if err != nil {
+		return err
 	}
 
 	// serialize back to pretty json and print

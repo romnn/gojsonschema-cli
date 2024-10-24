@@ -22,7 +22,6 @@ import (
 )
 
 const (
-	// essentially disable logging for now
 	defaultLogLevel = zap.InfoLevel
 )
 
@@ -170,6 +169,7 @@ func main() {
 				Usage: "merge",
 				Flags: []cli.Flag{
 					&mergeSchemaLocationsFlag,
+					&mergeSchemaOutputPathFlag,
 					&mergeStrictFlag,
 					&verboseFlag,
 					&colorFlag,

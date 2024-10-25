@@ -56,27 +56,27 @@ func (t strictTransformers) Transformer(
 	return nil
 }
 
-func MergeSchemasJSON(schemas ...[]byte) (*jsonschema.Schema, error) {
+func MergeSchemasJSON(verbose bool, schemas ...[]byte) ([]byte, error) {
 	debug := false
 	js := &astjson.JSON{}
 	var out bytes.Buffer
 
 	// initial root node
 	if err := js.ParseObject([]byte(`{}`)); err != nil {
-		return nil, err
+		return []byte{}, err
 	}
 
 	for _, schema := range schemas {
 		node, err := js.AppendObject(schema)
 		if err != nil {
-			return nil, err
+			return []byte{}, err
 		}
 		js.MergeNodes(js.RootNode, node)
 
 		if debug {
 			out.Reset()
 			if err := js.PrintNode(js.Nodes[js.RootNode], &out); err != nil {
-				return nil, err
+				return []byte{}, err
 			}
 			fmt.Printf("POST MERGE:\n%s\n", out.String())
 		}
@@ -84,13 +84,30 @@ func MergeSchemasJSON(schemas ...[]byte) (*jsonschema.Schema, error) {
 
 	out.Reset()
 	if err := js.PrintNode(js.Nodes[js.RootNode], &out); err != nil {
-		return nil, err
+		return []byte{}, err
 	}
-	var mergedSchema jsonschema.Schema
-	if err := json.Unmarshal(out.Bytes(), &mergedSchema); err != nil {
-		return nil, err
+
+	var mergedSchemaJSON any
+	if err := json.Unmarshal(out.Bytes(), &mergedSchemaJSON); err != nil {
+		return []byte{}, err
 	}
-	return &mergedSchema, nil
+	mergedSchemaPretty, err := json.MarshalIndent(mergedSchemaJSON, "", "    ")
+	if err != nil {
+		return []byte{}, err
+	}
+
+	if verbose {
+		fmt.Printf("merged:\n%s\n", mergedSchemaPretty)
+	}
+
+	// TODO(roman): skip this validation, since for example Type: string does not always
+	// match with schemas
+	// var mergedSchema jsonschema.Schema
+	// if err := json.Unmarshal(out.Bytes(), &mergedSchema); err != nil {
+	// 	return nil, err
+	// }
+	// return &mergedSchema, nil
+	return mergedSchemaPretty, nil
 }
 
 func MergeSchemas(schemas ...jsonschema.Schema) (*jsonschema.Schema, error) {

@@ -15,8 +15,10 @@ import (
 
 func DeepEqual(
 	t *testing.T,
-	have *jsonschema.Schema,
-	want *jsonschema.Schema,
+	// have *jsonschema.Schema,
+	// want *jsonschema.Schema,
+	haveJSON []byte,
+	wantJSON []byte,
 ) (bool, string) {
 	opts := cmp.Options{
 		// cmp.Comparer(func(a, b Properties) bool {
@@ -25,8 +27,8 @@ func DeepEqual(
 		// cmpopts.IgnoreUnexported(),
 		// protocmp.Transform(),
 	}
-	haveJSON := marshalSchema(t, have)
-	wantJSON := marshalSchema(t, want)
+	// haveJSON := marshalSchema(t, have)
+	// wantJSON := marshalSchema(t, want)
 
 	var haveCmp, wantCmp interface{}
 	if err := json.Unmarshal(haveJSON, &haveCmp); err != nil {
@@ -174,6 +176,7 @@ func TestSimpleMerge(t *testing.T) {
 		),
 		Type: "object",
 	}
+	expectedJSON := marshalSchema(t, &expected)
 
 	// merge using golang native types
 	// merged, err := MergeSchemas(schema1, schema2)
@@ -181,17 +184,18 @@ func TestSimpleMerge(t *testing.T) {
 	// 	t.Fatalf("failed to merge schemas: %v", err)
 	// }
 
+	verbose := false
 	schema1JSON := marshalSchema(t, &schema1)
 	schema2JSON := marshalSchema(t, &schema2)
-	merged, err := MergeSchemasJSON(schema1JSON, schema2JSON)
+	merged, err := MergeSchemasJSON(verbose, schema1JSON, schema2JSON)
 	if err != nil {
 		t.Fatalf("failed to merge schemas: %v", err)
 	}
 
 	t.Logf("expected: %s\n", string(marshalSchema(t, &expected)))
-	t.Logf("merged: %s\n", string(marshalSchema(t, merged)))
+	t.Logf("merged: %s\n", string(merged))
 
-	if equal, diff := DeepEqual(t, merged, &expected); !equal {
+	if equal, diff := DeepEqual(t, merged, expectedJSON); !equal {
 		t.Errorf("%s", diff)
 	}
 	// assert.True(t, false, "TODO")

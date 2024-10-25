@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"encoding/json"
+	// "encoding/json"
 	"fmt"
 	"os"
 
@@ -60,16 +60,16 @@ func merge(_ context.Context, cmd *cli.Command, logger *zap.Logger) error {
 	logger.Info("merging", zap.Int("schemas", len(schemas)))
 
 	// mergedSchema, err := pkg.MergeSchemas(schemas...)
-	mergedSchema, err := pkg.MergeSchemasJSON(schemas...)
+	mergedSchemaJSON, err := pkg.MergeSchemasJSON(verbose, schemas...)
 	if err != nil {
 		return err
 	}
 
-	// serialize back to pretty json and print
-	mergedSchemaJSON, err := json.MarshalIndent(mergedSchema, "", "    ")
-	if err != nil {
-		return err
-	}
+	// // serialize back to pretty json and print
+	// mergedSchemaJSON, err := json.MarshalIndent(mergedSchema, "", "    ")
+	// if err != nil {
+	// 	return err
+	// }
 
 	if mergedSchemaOutputPath != "" {
 		// save to output

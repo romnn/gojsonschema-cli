@@ -15,6 +15,7 @@ brews:
       owner: romnn
       name: homebrew-tap
       branch: main
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
       pull_request:
         enabled: false
 

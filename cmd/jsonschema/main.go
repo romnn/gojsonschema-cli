@@ -21,6 +21,12 @@ import (
 	"golang.org/x/term"
 )
 
+var (
+	Version   = "dev"
+	Commit    = "none"
+	BuildDate = "unknown"
+)
+
 const (
 	defaultLogLevel = zap.InfoLevel
 )
@@ -147,6 +153,7 @@ func main() {
 	app := cli.Command{
 		Name:        "jsonschema",
 		Description: "jsonschema",
+		Version:     fmt.Sprintf("%s (%s built on %s)", Version, Commit, BuildDate),
 		Usage:       "jsonschema",
 		Flags:       []cli.Flag{},
 		Commands: []*cli.Command{

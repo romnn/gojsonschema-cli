@@ -1,6 +1,7 @@
-# JSON schema valiation CLI
+# JSON schema validation CLI
 
 ![Build status](https://github.com/romnn/gojsonschema-cli/actions/workflows/build.yaml/badge.svg)
+![Test status](https://github.com/romnn/gojsonschema-cli/actions/workflows/test.yaml/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/romnn/gojsonschema-cli)](https://goreportcard.com/report/github.com/romnn/gojsonschema-cli)
 
 A golang CLI wrapper for [xeipuuv/gojsonschema](https://github.com/xeipuuv/gojsonschema).
@@ -56,8 +57,8 @@ To use the provided tasks in `taskfile.yaml`, install [task](https://taskfile.de
 ```bash
 # view all available tasks
 task --list-all
-# install development tools
-task dependencies:install
+# install development tools (requires brew/linuxbrew)
+task dev:tools:install
 ```
 
 After setup, you can use the following tasks during development:

@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: jsonschema
+    main: ./cmd/jsonschema
+    binary: ./bin/jsonschema
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      # prettier-ignore
+      - >-
+        -s -w
+        -X main.Version={{.Version}}
+        -X main.Commit={{.Commit}}
+        -X main.BuildDate={{.Date}}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+upx:
+  - ids: [jsonschema]
+    enabled: true
+    goos: [linux]
+    compress: best
+    lzma: true
+
+archives:
+  - format: tar.gz
+    files:
+      - LICENSE
+    format_overrides:
+      - goos: windows
+        format: zip
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  use: github
+  filters:
+    exclude:
+      - "^ci:"
+      - "^docs:"
+      - "^test:"
+
+release:
+  draft: false

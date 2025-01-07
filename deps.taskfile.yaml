@@ -1,39 +1,46 @@
 version: 3
 tasks:
-  golines:
+  goreleaser:brew:
     cmds:
-      - go install 'github.com/segmentio/golines@latest'
+      - brew install goreleaser
+    status:
+      - which goreleaser
+
+  golines:brew:
+    cmds:
+      - brew install golines
     status:
       - which golines
 
-  goimports:
+  staticcheck:brew:
     cmds:
-      - go install 'golang.org/x/tools/cmd/goimports@latest'
-    status:
-      - which goimports
-
-  staticcheck:
-    cmds:
-      - go install 'honnef.co/go/tools/cmd/staticcheck@latest'
+      - brew install staticcheck
     status:
       - which staticcheck
 
-  golangci-lint:
+  golangci-lint:brew:
     cmds:
-      - go install 'github.com/golangci/golangci-lint/cmd/golangci-lint@latest'
+      - brew install golangci-lint
     status:
       - which golangci-lint
 
-  richgo:
+  richgo:brew:
     cmds:
-      - go install 'github.com/kyoh86/richgo@latest'
+      - brew install richgo
     status:
       - which richgo
 
+  typos:brew:
+    cmds:
+      - brew install typos-cli
+    status:
+      - which typos
+
   default:
     cmds:
-      - task: golines
-      - task: goimports
-      - task: staticcheck
-      - task: golangci-lint
-      - task: richgo
+      - task: goreleaser:brew
+      - task: golines:brew
+      - task: staticcheck:brew
+      - task: golangci-lint:brew
+      - task: richgo:brew
+      - task: typos:brew

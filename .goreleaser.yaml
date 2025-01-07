@@ -5,6 +5,19 @@ before:
   hooks:
     - go mod tidy
 
+brews:
+  - id: jsonschema
+    description: "tiny JSON schema validator"
+    commit_author:
+      name: romnn
+      email: contact@romnn.com
+    repository:
+      owner: romnn
+      name: homebrew-tap
+      branch: main
+      pull_request:
+        enabled: false
+
 builds:
   - id: jsonschema
     main: ./cmd/jsonschema

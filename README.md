@@ -16,6 +16,9 @@ A golang CLI wrapper for [xeipuuv/gojsonschema](https://github.com/xeipuuv/gojso
 **Note**: Only schemas up to `draft07` are officially supported.
 
 ```bash
+brew install romnn/tap/jsonschema
+
+# or from source:
 go install 'github.com/romnn/gojsonschema-cli/cmd/jsonschema@main'
 ```
 
